@@ -18,6 +18,7 @@
 //WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -47,10 +48,11 @@ namespace HelixTraceDemoApp
             public double thickness;
         }
 
-        private List<Point3DPlus> points = new List<Point3DPlus>();
         private Stopwatch stopwatch = Stopwatch.StartNew();
 
         private string filePath;
+
+        private ConcurrentQueue<List<Point3DPlus>> pointsList = new ConcurrentQueue<List<Point3DPlus>>();
 
         public MainWindow()
         {
@@ -91,7 +93,7 @@ namespace HelixTraceDemoApp
 
             while (true)
             {
-                Thread.Sleep(5);  // 50ms data sampling period
+                Thread.Sleep(100);  // can use to change the poltting rate
 
                 //Generate a test trace: an upward spiral with square corners
 
@@ -140,76 +142,76 @@ namespace HelixTraceDemoApp
 
                 #endregion old test code
 
+                List<Point3DPlus> points = new List<Point3DPlus>();
+
                 Color color = Colors.Black;
                 double x = 0, y = 0, z = 0;
 
-                if (readDataStream.EndOfStream)
+                const int addPointSum = 50; //can use to change the poltting rate
+
+                for (int i = 0; i < addPointSum; i++)
                 {
-                    break;
-                }
-
-                var readDataLine = readDataStream.ReadLine();
-
-                var readDataNumbers = readDataLine.Split(' ');
-
-                try
-                {
-                    x = Convert.ToDouble(readDataNumbers[0]);
-                    y = Convert.ToDouble(readDataNumbers[1]);
-
-                    if (readDataNumbers.Length >= 3)
+                    if (readDataStream.EndOfStream)
                     {
-                        z = Convert.ToDouble(readDataNumbers[2]);
+                        break;
                     }
-                    else
-                    {
-                        z = 0;
-                    }
-                }
-                catch
-                {
-                    System.Windows.MessageBox.Show("Data format is error. The format is 'x y z'.", "Error", MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                    Environment.Exit(-1);
-                }
 
-                var point = new Point3DPlus(new Point3D(x, y, z), color, 1.5);
-                bool invoke = false;
-                lock (points)
-                {
+                    var readDataLine = readDataStream.ReadLine();
+
+                    var readDataNumbers = readDataLine.Split(' ');
+
+                    try
+                    {
+                        x = Convert.ToDouble(readDataNumbers[0]);
+                        y = Convert.ToDouble(readDataNumbers[1]);
+
+                        if (readDataNumbers.Length >= 3)
+                        {
+                            z = Convert.ToDouble(readDataNumbers[2]);
+                        }
+                        else
+                        {
+                            z = 0;
+                        }
+                    }
+                    catch
+                    {
+                        System.Windows.MessageBox.Show("Data format is error. The format is 'x y z'.", "Error", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                        Environment.Exit(-1);
+                    }
+
+                    var point = new Point3DPlus(new Point3D(x, y, z), color, 1.5);
+
                     points.Add(point);
-                    invoke = (points.Count == 1);
+                }
+
+                bool invoke = false;
+                if (points.Count > 0)
+                {
+                    pointsList.Enqueue(points);
+                    invoke = true;
                 }
 
                 if (invoke)
+                {
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)PlotData);
+                }
             }
         }
 
         private void PlotData()
         {
-            if (points.Count == 1)
+            if (pointsList.Count > 0)
             {
-                Point3DPlus point;
-                lock (points)
+                bool resultPop = pointsList.TryDequeue(out var points);
+                if (resultPop)
                 {
-                    point = points[0];
-                    points.Clear();
-                }
+                    var pointsArray = points.ToArray();
 
-                plot.AddPoint(point.point, point.color, point.thickness);
-            }
-            else
-            {
-                Point3DPlus[] pointsArray;
-                lock (points)
-                {
-                    pointsArray = points.ToArray();
-                    points.Clear();
+                    foreach (Point3DPlus point in pointsArray)
+                        plot.AddPoint(point.point, point.color, point.thickness);
                 }
-
-                foreach (Point3DPlus point in pointsArray)
-                    plot.AddPoint(point.point, point.color, point.thickness);
             }
         }
 

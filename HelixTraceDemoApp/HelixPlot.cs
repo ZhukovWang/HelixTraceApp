@@ -1,22 +1,21 @@
-﻿//Copyright (c) 2018 Bruce Greene
+//Copyright (c) 2018 Bruce Greene
 
-//Permission is hereby granted, free of charge, to any person obtaining a copy 
+//Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
-//in the Software without restriction, including without limitation the rights to 
-//use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-//of the Software, and to permit persons to whom the Software is furnished to do 
+//in the Software without restriction, including without limitation the rights to
+//use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+//of the Software, and to permit persons to whom the Software is furnished to do
 //so, subject to the following conditions:
 
-//The above copyright notice and this permission notice shall be included in all 
+//The above copyright notice and this permission notice shall be included in all
 //copies or substantial portions of the Software.
 
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS 
-//FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
-//COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
-//IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+//FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+//COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+//IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 //WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 
 using HelixToolkit.Wpf;
 using System;
@@ -32,10 +31,10 @@ namespace HelixTraceDemoApp
     /// </summary>
     /// <remarks>
     /// This class utilizes the Helix Toolkit which is licensed under the MIT License.
-    /// 
+    ///
     /// The MIT License (MIT)
     /// Copyright(c) 2018 Helix Toolkit contributors
-    /// 
+    ///
     /// Permission is hereby granted, free of charge, to any person obtaining a
     /// copy of this software and associated documentation files (the
     /// "Software"), to deal in the Software without restriction, including
@@ -43,10 +42,10 @@ namespace HelixTraceDemoApp
     /// distribute, sublicense, and/or sell copies of the Software, and to
     /// permit persons to whom the Software is furnished to do so, subject to
     /// the following conditions:
-    /// 
+    ///
     /// The above copyright notice and this permission notice shall be included
     /// in all copies or substantial portions of the Software.
-    /// 
+    ///
     /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
     /// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
     /// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -78,9 +77,9 @@ namespace HelixTraceDemoApp
 
             // Default configuration:
             AxisLabels = "X,Y,Z";
-            BoundingBox = new Rect3D(0, 0, 0, 100, 100, 50);
+            BoundingBox = new Rect3D(-50, -50, -25, 100, 100, 50); // the original place
             TickSize = 10;
-            MinDistance = 0.1;
+            MinDistance = 0.01;
             DecimalPlaces = 1;
             Background = Brushes.White;
             AxisBrush = Brushes.Gray;
@@ -117,14 +116,19 @@ namespace HelixTraceDemoApp
         {
             /// <summary>Traces only.</summary>
             None = 0x00,
+
             /// <summary>XYZ axes.</summary>
             Axes = 0x01,
+
             /// <summary>XY grid.</summary>
             Grid = 0x02,
+
             /// <summary>XYZ bounding box.</summary>
             BoundingBox = 0x04,
+
             /// <summary>Marker cone and coordinates.</summary>
             Marker = 0x08,
+
             /// <summary>Axes, grid, bounding box and marker.</summary>
             All = 0x0F
         };
@@ -235,7 +239,7 @@ namespace HelixTraceDemoApp
                 Children.Add(marker);
 
                 coords = new BillboardTextVisual3D();
-                coordinateFormat = string.Format("{{0:F{0}}}, {{1:F{0}}}, {{2:F{0}}}", DecimalPlaces, DecimalPlaces, DecimalPlaces);  // "{0:F2}, {1:F2}, {2:F2}"
+                coordinateFormat = string.Format("{{0:F6}}, {{1:F6}}, {{2:F6}}", DecimalPlaces, DecimalPlaces, DecimalPlaces);  // "{0:F2}, {1:F2}, {2:F2}"
                 coords.Text = string.Format(coordinateFormat, 0.0, 0.0, 0.0);
                 coords.Foreground = MarkerBrush;
                 coords.Position = new Point3D(-labelOffset, -labelOffset, labelOffset);
