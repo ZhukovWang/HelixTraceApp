@@ -8,6 +8,8 @@ HelixTraceApp is a software that can be used to pltting data trajectory. Use `C#
 
 Refering to [this Demo](https://www.codeproject.com/Articles/1246255/Plotting-a-Real-time-D-Toolpath-with-Helix-Toolkit), and change some code.
 
+![example pic](media/readme_example_pic.png)
+
 ## 背景 Background
 
 在Windows上处理一些大量轨迹数据的时候，需要绘图进行分析，过去使用的`gnuplot`显得有些力不从心，无论是使用`wxt`还是`qt`反应速度都无法让人满意。究其原因，似乎二者都不是使用GPU进行绘图，而是使用CPU进行绘图，在进行图形绘制时，计算量过大。
@@ -62,3 +64,7 @@ Build and exeucte, then choose the data file, and plotting.
 1. 图像可以进行移动
 1. 加入绘图速度条件滑动条
 1. 加入立即绘图按钮
+
+## License
+
+MIT
