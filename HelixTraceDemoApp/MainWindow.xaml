@@ -1,0 +1,17 @@
+﻿<Window x:Class="HelixTraceDemoApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HelixTraceDemoApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800" WindowStartupLocation="CenterScreen">
+    
+    <Grid>
+        <local:HelixPlot x:Name="plot" ShowViewCube="False" />
+
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Button Name="btnZoom" Content="ZOOM" Padding="4" Margin="0,0,4,4" Click="btnZoom_Click" ToolTip="Zoom Extents" />
+        </StackPanel>
+    </Grid>
+</Window>
